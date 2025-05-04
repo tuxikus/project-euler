@@ -1,0 +1,92 @@
+#+title: Multiples of 3 or 5
+#+date: <2025-05-02 Fr>
+
+[[https://projecteuler.net/problem=1][Project Euler - Problem 1]]
+
+* Description
+If we list all the natural numbers below $10$ that are multiplies of $3$ or $5$, we get $3,5,6$ and
+$9$. The sum of these multiplies is $23$. Find the sum of all the multiplies of $3$ or $5$ below $1000$.
+
+* Solutions
+** Python - iterative
+#+begin_src python
+  numbers = range(1, 1000)
+  sum = 0
+
+  for number in numbers:
+      if number % 3 == 0 or \
+         number % 5 == 0:
+          sum += number
+
+  return sum
+#+end_src
+
+#+RESULTS:
+: 233168
+
+** Python - recursive
+#+begin_src python
+  import sys
+  sys.setrecursionlimit(2000)
+
+  def calculate_sum_of_multipliers():
+      return _calculate_sum_of_multipliers(list(range(1, 1000)), 0)
+
+  def _calculate_sum_of_multipliers(numbers, sum):
+      if not numbers:
+          return sum
+
+      number = numbers.pop()
+      if number % 3 == 0 or \
+         number % 5 == 0:
+          sum += number
+
+      return _calculate_sum_of_multipliers(numbers, sum)
+
+  return calculate_sum_of_multipliers()
+#+end_src
+
+#+RESULTS:
+: 233168
+
+** Emacs Lisp
+#+begin_src emacs-lisp
+(setq max-lisp-eval-depth (expt 10 6))
+
+(defun calculate-sum-of-multipliers (n sum)
+  (let ((next-number (- n 1)))
+    (if (< next-number 0)
+        sum
+      (calculate-sum-of-multipliers
+       next-number
+       (if (or (= (% next-number 5) 0) (= (% next-number 3) 0))
+           (+ sum next-number)
+         sum)))))
+
+(message "%d" (calculate-sum-of-multipliers 1000 0))
+#+end_src
+
+#+RESULTS:
+: 233168
+
+** Scheme (Guile)
+#+begin_src scheme
+  (use-modules (srfi srfi-1))
+
+  (define (multiple-of-3-or-5? n)
+    (or (= (modulo n 5) 0)
+        (= (modulo n 3) 0)))
+
+  (define (calculate-sum-of-multipliers numbers sum)
+    (if (null? numbers)
+        sum
+        (if  (multiple-of-3-or-5? (car numbers))
+                 (calculate-sum-of-multipliers (cdr numbers) (+ sum (car numbers)))
+                 (calculate-sum-of-multipliers (cdr numbers) sum))))
+
+  (define numbers (iota 1000))
+  (calculate-sum-of-multipliers numbers 0)
+#+end_src
+
+#+RESULTS:
+: 233168
