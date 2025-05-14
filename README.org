@@ -1,1 +1,2 @@
 * Project Euler solutions
+- [[file:problem-1.org][Problem 1]]
