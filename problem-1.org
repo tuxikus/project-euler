@@ -90,3 +90,18 @@ $9$. The sum of these multiplies is $23$. Find the sum of all the multiplies of 
 
 #+RESULTS:
 : 233168
+
+** Common Lisp
+#+begin_src lisp
+  (defun calculate-sum-of-multipliers (n sum)
+    (if (= n 1)
+        sum
+        (if (or (= (mod n 5) 0) (= (mod n 3) 0))
+            (calculate-sum-of-multipliers (- n 1) (+ n sum))
+            (calculate-sum-of-multipliers (- n 1) sum))))
+
+  (calculate-sum-of-multipliers 999 0)
+#+end_src
+
+#+RESULTS:
+: 233168
